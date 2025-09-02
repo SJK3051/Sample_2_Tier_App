@@ -1,0 +1,74 @@
+# Default values for presto-app.
+
+replicaCount: 2  # increase for high availability
+
+# Container image configuration
+image:
+  repository: 460928920964.dkr.ecr.us-east-1.amazonaws.com/presto-app
+  pullPolicy: IfNotPresent
+  tag: latest  # or use Jenkins BUILD_NUMBER/GIT_COMMIT for versioning
+
+# If using private registry (ECR), add imagePullSecrets
+imagePullSecrets:
+  - name: ecr-secret
+
+# Service account configuration
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+# Pod metadata
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+securityContext: {}
+
+# Service configuration
+service:
+  type: NodePort  # expose externally
+  port: 80
+
+# Ingress configuration (optional)
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: presto-app.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+# Resource limits (optional)
+resources: {}
+
+# Liveness and readiness probes
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+
+# Autoscaling (optional)
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+# Volumes and mounts (optional)
+volumes: []
+volumeMounts: []
+
+# Node scheduling
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
