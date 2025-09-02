@@ -5,7 +5,7 @@ pipeline {
         AWS_REGION   = "us-east-1"   
         ECR_REPO     = "presto-app"
         ECR_REGISTRY = "460928920964.dkr.ecr.us-east-1.amazonaws.com"
-        IMAGE_TAG    = "latest"   // can also use BUILD_NUMBER or GIT_COMMIT
+        IMAGE_TAG    = "latest"
     }
 
     stages {
@@ -17,7 +17,8 @@ pipeline {
 
         stage('Login to AWS ECR') {
             steps {
-                script {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', 
+                                  credentialsId: 'aws-creds']]) {
                     sh """
                     aws ecr get-login-password --region $AWS_REGION \
                     | docker login --username AWS --password-stdin $ECR_REGISTRY
@@ -39,9 +40,7 @@ pipeline {
 
         stage('Push to ECR') {
             steps {
-                script {
-                    sh "docker push $ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG"
-                }
+                sh "docker push $ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG"
             }
         }
     }
@@ -55,4 +54,5 @@ pipeline {
         }
     }
 }
+
 
