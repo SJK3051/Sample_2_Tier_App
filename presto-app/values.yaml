@@ -1,6 +1,7 @@
-# Default values for presto-app.
+# Namespace where the app will be deployed
+namespace: argocd  # Change to 'argocd' if you want to deploy there
 
-replicaCount: 2  # increase for high availability
+replicaCount: 1 # increase for high availability
 
 # Container image configuration
 image:
@@ -29,7 +30,7 @@ securityContext: {}
 # Service configuration
 service:
   type: NodePort  # expose externally
-  port: 80
+  port: 8080
 
 # Ingress configuration (optional)
 ingress:
@@ -50,11 +51,11 @@ resources: {}
 livenessProbe:
   httpGet:
     path: /
-    port: http
+    port: 8080
 readinessProbe:
   httpGet:
     path: /
-    port: http
+    port: 8080
 
 # Autoscaling (optional)
 autoscaling:
